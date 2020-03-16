@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/jpqy/tinyapp/issues"
   },
-  "homepage": "https://github.com/jpqy/tinyapp#readme"
+  "homepage": "https://github.com/jpqy/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
