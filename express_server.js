@@ -88,8 +88,13 @@ app.post("/urls/:shortURL", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];
-  res.redirect("/urls");
+  const userID = req.cookies["user_id"];
+  if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === userID) {
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
+  } else {
+    res.status(401).send("Operation failed");
+  }
 });
 
 app.post("/logout", (req, res) => {
