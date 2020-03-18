@@ -78,12 +78,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-app.post("/login", (req, res) => {
-  const username = req.body.username;
-  res.cookie('username', username);
-  res.redirect("/urls");
-});
-
 app.post('/logout', (req, res) => {
   res.clearCookie("user_id");
   res.redirect("/urls");
@@ -107,6 +101,13 @@ app.post('/register', (req, res) => {
   res.redirect('/urls');
 });
 
+app.get('/login', (req, res) => {
+  res.render('login', { user: users[req.cookies["user_id"]] });
+});
+
+app.post('/login', (req, res) => {
+  res.send('TODO');
+});
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
