@@ -61,7 +61,9 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
+  urlDatabase[shortURL]={};
   urlDatabase[shortURL].longURL = req.body.longURL;
+  urlDatabase[shortURL].userID = req.cookies["user_id"];
   res.redirect(`/urls/${shortURL}`);
 });
 
