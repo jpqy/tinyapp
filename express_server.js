@@ -27,8 +27,7 @@ const users = {
 };
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
-  res.send("Hi!");
+  res.redirect("/urls");
 });
 
 app.get("/urls.json", (req, res) => {
