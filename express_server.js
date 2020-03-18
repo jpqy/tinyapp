@@ -39,18 +39,18 @@ app.get("/hello", (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  let templateVars = { urls: urlDatabase, user: users[(req.cookies["user_id"])] };
   res.render("urls_index", templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  res.render('urls_new', {user: users[(req.cookies["user_id"])]});
 });
 
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
-  let templateVars = { shortURL, longURL, username: req.cookies["username"] };
+  let templateVars = { shortURL, longURL, user: users[(req.cookies["user_id"])] };
   res.render('urls_show', templateVars);
 });
 
@@ -85,19 +85,19 @@ app.post("/login", (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
 app.get('/register', (req, res) => {
-  res.render('register', { username: req.cookies["username"] });
+  res.render('register', { user: users[req.cookies["user_id"]] });
 });
 
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
   const id = generateRandomString();
   const newUser = { id, email, password };
-  users[id]=newUser;
+  users[id] = newUser;
   res.cookie('user_id', id);
   res.redirect('/urls');
 });
