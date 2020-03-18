@@ -17,17 +17,18 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: "purple"
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: "dishwasher"
   }
 };
 
 app.get("/", (req, res) => {
   res.send("Hello!");
+  res.send("Hi!");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -36,10 +37,16 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
+  res.send("<html><body>Hello <b>World</b></body></htm>\n");
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, user: users[(req.cookies["user_id"])] };
+  const user = users[req.cookies["user_id"]];
+  if (!user) {
+    return res.redirect("/login");
+  }
+  const urls = urlsForUser(user.id);
+  let templateVars = { urls, user };
   res.render("urls_index", templateVars);
 });
 
@@ -61,7 +68,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
-  urlDatabase[shortURL]={};
+  urlDatabase[shortURL] = {};
   urlDatabase[shortURL].longURL = req.body.longURL;
   urlDatabase[shortURL].userID = req.cookies["user_id"];
   res.redirect(`/urls/${shortURL}`);
@@ -146,4 +153,16 @@ function getIdFromEmail(email) {
     }
   }
   return null;
+}
+
+// Filters urlDatabase to only those with id of current user
+function urlsForUser(id) {
+  const result = {};
+  for (key in urlDatabase) {
+    if (urlDatabase[key].userID === id) {
+      result[key] = urlDatabase[key];
+    }
+  }
+  console.log(JSON.stringify(result));
+  return result;
 }
