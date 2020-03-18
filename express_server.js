@@ -168,6 +168,5 @@ function urlsForUser(id) {
       result[key] = urlDatabase[key];
     }
   }
-  console.log(JSON.stringify(result));
   return result;
 }
