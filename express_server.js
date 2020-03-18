@@ -44,7 +44,12 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new", { user: users[(req.cookies["user_id"])] });
+
+  if (!req.cookies["user_id"]) {
+    res.redirect("/login");
+  } else {
+    res.render("urls_new", { user: users[(req.cookies["user_id"])] });
+  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
