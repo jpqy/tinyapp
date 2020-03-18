@@ -44,7 +44,7 @@ app.get('/urls', (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new', {user: users[(req.cookies["user_id"])]});
+  res.render('urls_new', { user: users[(req.cookies["user_id"])] });
 });
 
 app.get('/urls/:shortURL', (req, res) => {
@@ -95,6 +95,11 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400).send('You did not fill out the form correctly!');
+  } else if (getIdFromEmail(email)) {
+    res.status(400).send('Email already in use!');
+  }
   const id = generateRandomString();
   const newUser = { id, email, password };
   users[id] = newUser;
@@ -115,4 +120,13 @@ function generateRandomString() {
     string += chars.charAt(Math.floor(Math.random() * charLength));
   }
   return string;
+}
+
+function getIdFromEmail(email) {
+  for (const key in users) {
+    if (users[key].email === email) {
+      return key;
+    }
+  }
+  return null;
 }
