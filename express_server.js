@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-const cookieParser=require("cookie-parser");
+const cookieParser = require("cookie-parser");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -27,7 +27,7 @@ app.get("/hello", (req, res) => {
 
 app.get('/urls', (req, res) => {
   let templateVars = { urls: urlDatabase, username: req.cookies["username"] };
-  res.render("urls_index", templateVars);  
+  res.render("urls_index", templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
@@ -74,6 +74,10 @@ app.post("/login", (req, res) => {
 app.post('/logout', (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls");
+});
+
+app.get('/register', (req, res) => {
+  res.render('register', { username: req.cookies["username"] });
 });
 
 app.listen(PORT, () => {
