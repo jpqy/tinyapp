@@ -19,8 +19,8 @@ const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
     userID: "userRandomID",
-    totalVisitors: 0,
-    uniqueVisitors: 0,
+    totalVisits: 109,
+    uniqueVisits: 24,
     visits: []
   },
   "9sm5xK": {
@@ -60,6 +60,7 @@ app.get("/urls", (req, res) => {
   }
   const urls = urlsForUser(user.id, urlDatabase);
   let templateVars = { urls, user };
+  console.log(urls);
   return res.render("urls_index", templateVars);
 });
 
@@ -88,8 +89,8 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
     userID: req.session.user_id,
-    totalVisitors: 0,
-    uniqueVisitors: 0,
+    totalVisits: 0,
+    uniqueVisits: 0,
     visits: []
   };
   return res.redirect(`urls/${shortURL}`);
