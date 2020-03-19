@@ -8,7 +8,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
  
-  <title>TinyApp - Info page for <%= longURL %></title>
+  <title>TinyApp - Info for <%= shortURL %></title>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
   <div class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+      <h5 class="card-title">TinyURL - <%= longURL %></h5>
       <p class="card-text">Short URL: <a href="u/<%= shortURL %>"><%= shortURL %></a></p>
     </div>
     <div class="card-footer text-muted">
