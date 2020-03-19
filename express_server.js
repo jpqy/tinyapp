@@ -4,6 +4,7 @@ const PORT = 35353; // default port 8080
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcrypt');
+const helpers = require('./helpers');
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -117,7 +118,7 @@ app.post("/register", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).send("You did not fill out the form correctly!");
-  } else if (getIdFromEmail(email, users)) {
+  } else if (helpers.getIdFromEmail(email, users)) {
     return res.status(400).send("Email already in use!");
   }
   const id = generateRandomString();
@@ -134,7 +135,7 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const id = getIdFromEmail(email, users);
+  const id = helpers.getIdFromEmail(email, users);
 
   if (!id) {
     return res.status(403).send("Login failed");
@@ -160,15 +161,6 @@ function generateRandomString() {
   }
   return string;
 }
-
-const getIdFromEmail = function(email, userDB) {
-  for (const key in userDB) {
-    if (userDB[key].email === email) {
-      return key;
-    }
-  }
-  return null;
-};
 
 // Filters urlDatabase to only those with id of current user
 function urlsForUser(id) {
