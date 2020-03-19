@@ -52,7 +52,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
 
   if (!req.cookies["user_id"]) {
-    res.redirect("login");
+    res.redirect("../login");
   } else {
     res.render("urls_new", { user: users[(req.cookies["user_id"])] });
   }
@@ -82,7 +82,7 @@ app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const newLongURL = req.body.newLongURL;
   urlDatabase[shortURL].longURL = newLongURL;
-  res.redirect("urls");
+  res.redirect("..");
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -90,7 +90,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const userID = req.cookies["user_id"];
   if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === userID) {
     delete urlDatabase[shortURL];
-    res.redirect("/tinyapp/urls");
+    res.redirect("../..");
   } else {
     res.status(401).send("Operation failed");
   }
