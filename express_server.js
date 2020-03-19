@@ -68,15 +68,21 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
-  urlDatabase[shortURL] = {};
-  urlDatabase[shortURL].longURL = req.body.longURL;
-  urlDatabase[shortURL].userID = req.session["user_id"];
+
+  // Making sure no collisions in shortURL generation
+  while (urlDatabase[shortURL]) {
+    shortURL = generateRandomString();
+  }
+  urlDatabase[shortURL] = {
+    longURL: req.body.longURL,
+    userID: req.session["user_id"]
+  };
   return res.redirect(`urls/${shortURL}`);
 });
 
 app.get("/u/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]) {
-    return res.send("Invalid shortURL!");
+    return res.status(404).send("ShortURL not found!");
   }
   const { longURL } = urlDatabase[req.params.shortURL];
   return res.redirect(longURL);
@@ -116,7 +122,13 @@ app.post("/register", (req, res) => {
   } else if (getIdFromEmail(email, users)) {
     return res.status(400).send("Email already in use!");
   }
+
+  // Collision handling for userID
   const id = generateRandomString();
+  while (users[id]) {
+    id = generateRandomString();
+  }
+  
   const hashedPassword = bcrypt.hashSync(password, 10);
   const newUser = { id, email, hashedPassword };
   users[id] = newUser;
