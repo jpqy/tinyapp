@@ -3,6 +3,7 @@ const app = express();
 const PORT = 35353; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -16,12 +17,12 @@ const urlDatabase = {
 const users = {
   "userRandomID": {
     id: "userRandomID",
-    email: "user@example.com",
-    password: "purple"
+    email: "a@a.com",
+    hashedPassword: bcrypt.hashSync("purple", 10)
   },
   "user2RandomID": {
     id: "user2RandomID",
-    email: "user2@example.com",
+    email: "b@b.com",
     password: "dishwasher"
   }
 };
@@ -112,12 +113,13 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    res.status(400).send("You did not fill out the form correctly!");
+    return res.status(400).send("You did not fill out the form correctly!");
   } else if (getIdFromEmail(email)) {
-    res.status(400).send("Email already in use!");
+    return res.status(400).send("Email already in use!");
   }
   const id = generateRandomString();
-  const newUser = { id, email, password };
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  const newUser = { id, email, hashedPassword };
   users[id] = newUser;
   res.cookie("user_id", id);
   res.redirect("urls");
@@ -131,12 +133,12 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const id = getIdFromEmail(email);
   if (!id) {
-    res.status(403).send("Login failed");
-  } else if (users[id].password !== password) {
-    res.status(403).send("Login failed");
+    return res.status(403).send("Login failed");
+  } else if (!bcrypt.compareSync(users[id].hashedPassword, password)) {
+    return res.status(403).send("Login failed");
   } else {
     res.cookie("user_id", id);
-    res.redirect("urls");
+    return res.redirect("urls");
   }
 });
 app.listen(PORT, () => {
