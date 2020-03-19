@@ -112,6 +112,10 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  // Redirect to home if a logged-in user tries to register
+  if (users[req.session.user_id]) {
+    return res.redirect('/urls');
+  }
   return res.render("register", { user: users[req.session["user_id"]] });
 });
 
@@ -128,7 +132,7 @@ app.post("/register", (req, res) => {
   while (users[id]) {
     id = generateRandomString();
   }
-  
+
   const hashedPassword = bcrypt.hashSync(password, 10);
   const newUser = { id, email, hashedPassword };
   users[id] = newUser;
@@ -137,6 +141,10 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  // Redirect to home if a logged-in user tries to login
+  if (users[req.session.user_id]) {
+    return res.redirect('/urls');
+  }
   return res.render("login", { user: users[req.session.user_id] });
 });
 
