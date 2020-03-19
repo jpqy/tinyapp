@@ -11,7 +11,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'session',
-  keys: ['secret']
+  keys: ['user_id']
 }));
 app.use(methodOverride('_method'));
 
