@@ -16,7 +16,7 @@
       <p class="card-text">Short URL: <a href="u/<%= shortURL %>"><%= shortURL %></a></p>
     </div>
     <div class="card-footer text-muted">
-      <form action="urls/<%=shortURL%>" method="post">
+      <form action="urls/<%=shortURL%>?_method=PUT" method="post">
         <h5 class="card-title">Edit</h5>
         <span>New URL: </span><input type="text" label="New URL:" placeholder="<%= longURL %>" name="newLongURL">
         <button>Submit</button>
