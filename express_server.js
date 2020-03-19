@@ -132,15 +132,17 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const id = getIdFromEmail(email);
+
   if (!id) {
     return res.status(403).send("Login failed");
-  } else if (!bcrypt.compareSync(users[id].hashedPassword, password)) {
+  } else if (bcrypt.compareSync(password, users[id].hashedPassword) === false) {
     return res.status(403).send("Login failed");
   } else {
     res.cookie("user_id", id);
     return res.redirect("urls");
   }
 });
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
