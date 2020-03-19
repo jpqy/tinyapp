@@ -4,6 +4,7 @@ const PORT = 35353; // default port 8080
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcrypt');
+const methodOverride = require('method-override');
 const { getIdFromEmail } = require('./helpers');
 
 app.set("view engine", "ejs");
@@ -12,6 +13,7 @@ app.use(cookieSession({
   name: 'session',
   keys: ['secret']
 }));
+app.use(methodOverride('_method'));
 
 const urlDatabase = {
   "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "userRandomID" },
