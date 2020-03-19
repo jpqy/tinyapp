@@ -96,12 +96,12 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("..");
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const userID = req.session["user_id"];
   if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === userID) {
     delete urlDatabase[shortURL];
-    res.redirect("../..");
+    res.redirect("..");
   } else {
     res.status(401).send("Operation failed");
   }

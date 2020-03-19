@@ -29,7 +29,7 @@
           <td><%= url %></td>
           <td><%= urls[url].longURL %></td>
           <td><form method="GET" action='urls/<%= url %>'><button class="btn btn-outline-primary">Edit</button></form></td>
-          <td><form method="POST" action='urls/<%= url %>/delete'><button class="btn btn-outline-danger">Delete</button></form></td>
+          <td><form method="POST" action='urls/<%= url %>?_method=DELETE'><button class="btn btn-outline-danger">Delete</button></form></td>
         </tr>
         <% } %>
       </tbody>
