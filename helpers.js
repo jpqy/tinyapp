@@ -4,7 +4,7 @@ const getIdFromEmail = function(email, userDB) {
       return key;
     }
   }
-  return null;
+  return undefined;
 };
 
 module.exports = { getIdFromEmail }
