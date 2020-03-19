@@ -16,8 +16,20 @@ app.use(cookieSession({
 app.use(methodOverride('_method'));
 
 const urlDatabase = {
-  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "userRandomID" },
-  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID" }
+  "b2xVn2": {
+    longURL: "http://www.lighthouselabs.ca",
+    userID: "userRandomID",
+    totalVisitors: 0,
+    uniqueVisitors: 0,
+    visits: []
+  },
+  "9sm5xK": {
+    longURL: "http://www.google.com",
+    userID: "user2RandomID",
+    totalVisitors: 0,
+    uniqueVisitors: 0,
+    visits: []
+  }
 };
 
 const users = {
@@ -60,7 +72,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
+  const { shortURL } = req.params;
   const { longURL } = urlDatabase[shortURL];
   let templateVars = { shortURL, longURL, user: users[(req.session.user_id)] };
   return res.render("urls_show", templateVars);
@@ -75,7 +87,10 @@ app.post("/urls", (req, res) => {
   }
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
-    userID: req.session.user_id
+    userID: req.session.user_id,
+    totalVisitors: 0,
+    uniqueVisitors: 0,
+    visits: []
   };
   return res.redirect(`urls/${shortURL}`);
 });
