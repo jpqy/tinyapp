@@ -26,8 +26,8 @@ const urlDatabase = {
   "9sm5xK": {
     longURL: "http://www.google.com",
     userID: "user2RandomID",
-    totalVisitors: 0,
-    uniqueVisitors: 0,
+    totalVisits: 0,
+    uniqueVisits: 0,
     visits: []
   }
 };
@@ -97,16 +97,20 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  if (!urlDatabase[req.params.shortURL]) {
+  const { shortURL } = req.params;
+  if (!urlDatabase[shortURL]) {
     return res.status(404).send("ShortURL not found!");
   }
-  const { longURL } = urlDatabase[req.params.shortURL];
+
+  // Analytics: increment shortURL's total visits
+  urlDatabase[shortURL].totalVisits++;
+
+  const { longURL } = urlDatabase[shortURL];
   return res.redirect(longURL);
 });
 
 app.put("/urls/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  const newLongURL = req.body.newLongURL;
+  const { shortURL, newLongURL } = req.params;
   urlDatabase[shortURL].longURL = newLongURL;
   return res.redirect("..");
 });
