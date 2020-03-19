@@ -117,7 +117,7 @@ app.post("/register", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).send("You did not fill out the form correctly!");
-  } else if (getIdFromEmail(email)) {
+  } else if (getIdFromEmail(email, users)) {
     return res.status(400).send("Email already in use!");
   }
   const id = generateRandomString();
@@ -134,7 +134,7 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  const id = getIdFromEmail(email);
+  const id = getIdFromEmail(email, users);
 
   if (!id) {
     return res.status(403).send("Login failed");
@@ -161,14 +161,14 @@ function generateRandomString() {
   return string;
 }
 
-function getIdFromEmail(email) {
-  for (const key in users) {
-    if (users[key].email === email) {
+const getIdFromEmail = function(email, userDB) {
+  for (const key in userDB) {
+    if (userDB[key].email === email) {
       return key;
     }
   }
   return null;
-}
+};
 
 // Filters urlDatabase to only those with id of current user
 function urlsForUser(id) {
