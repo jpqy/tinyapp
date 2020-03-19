@@ -52,17 +52,17 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  if (!req.session["user_id"]) {
+  if (!req.session.user_id) {
     return res.redirect("../login");
   } else {
-    return res.render("urls_new", { user: users[(req.session["user_id"])] });
+    return res.render("urls_new", { user: users[(req.session.user_id)] });
   }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const { longURL } = urlDatabase[shortURL];
-  let templateVars = { shortURL, longURL, user: users[(req.session["user_id"])] };
+  let templateVars = { shortURL, longURL, user: users[(req.session.user_id)] };
   return res.render("urls_show", templateVars);
 });
 
@@ -75,7 +75,7 @@ app.post("/urls", (req, res) => {
   }
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
-    userID: req.session["user_id"]
+    userID: req.session.user_id
   };
   return res.redirect(`urls/${shortURL}`);
 });
@@ -97,7 +97,7 @@ app.put("/urls/:shortURL", (req, res) => {
 
 app.delete("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const userID = req.session["user_id"];
+  const userID = req.session.user_id;
   if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === userID) {
     delete urlDatabase[shortURL];
     return res.redirect("..");
@@ -116,7 +116,7 @@ app.get("/register", (req, res) => {
   if (users[req.session.user_id]) {
     return res.redirect('/urls');
   }
-  return res.render("register", { user: users[req.session["user_id"]] });
+  return res.render("register", { user: users[req.session.user_id] });
 });
 
 app.post("/register", (req, res) => {
