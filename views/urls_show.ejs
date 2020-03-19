@@ -5,6 +5,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>URL - TinyApp Example</title>
+<base href="/tinyapp/">
 </head>
 
 <body>
@@ -13,10 +14,10 @@
     <div class="card-header"></div>
     <div class="card-body">
       <h5 class="card-title">TinyURL for: <%= longURL %></h5>
-      <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
+      <p class="card-text">Short URL: <a href="u/<%= shortURL %>"><%= shortURL %></a></p>
     </div>
     <div class="card-footer text-muted">
-      <form action="/urls/<%=shortURL%>" method="post">
+      <form action="urls/<%=shortURL%>" method="post">
         <h5 class="card-title">Edit</h5>
         <span>New URL: </span><input type="text" label="New URL:" placeholder="<%= longURL %>" name="newLongURL">
         <button>Submit</button>

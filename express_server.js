@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 35353; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
@@ -27,7 +27,7 @@ const users = {
 };
 
 app.get("/", (req, res) => {
-  res.redirect("/urls");
+  res.redirect("urls");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -42,7 +42,7 @@ app.get("/hello", (req, res) => {
 app.get("/urls", (req, res) => {
   const user = users[req.cookies["user_id"]];
   if (!user) {
-    return res.redirect("/login");
+    return res.redirect("login");
   }
   const urls = urlsForUser(user.id);
   let templateVars = { urls, user };
@@ -52,7 +52,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
 
   if (!req.cookies["user_id"]) {
-    res.redirect("/login");
+    res.redirect("login");
   } else {
     res.render("urls_new", { user: users[(req.cookies["user_id"])] });
   }
@@ -70,7 +70,7 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = {};
   urlDatabase[shortURL].longURL = req.body.longURL;
   urlDatabase[shortURL].userID = req.cookies["user_id"];
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect(`urls/${shortURL}`);
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -82,7 +82,7 @@ app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const newLongURL = req.body.newLongURL;
   urlDatabase[shortURL].longURL = newLongURL;
-  res.redirect("/urls");
+  res.redirect("urls");
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
@@ -90,7 +90,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const userID = req.cookies["user_id"];
   if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === userID) {
     delete urlDatabase[shortURL];
-    res.redirect("/urls");
+    res.redirect("/tinyapp/urls");
   } else {
     res.status(401).send("Operation failed");
   }
@@ -98,7 +98,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect("/urls");
+  res.redirect("urls");
 });
 
 app.get("/register", (req, res) => {
@@ -116,7 +116,7 @@ app.post("/register", (req, res) => {
   const newUser = { id, email, password };
   users[id] = newUser;
   res.cookie("user_id", id);
-  res.redirect("/urls");
+  res.redirect("urls");
 });
 
 app.get("/login", (req, res) => {
@@ -132,7 +132,7 @@ app.post("/login", (req, res) => {
     res.status(403).send("Login failed");
   } else {
     res.cookie("user_id", id);
-    res.redirect("/urls");
+    res.redirect("urls");
   }
 });
 app.listen(PORT, () => {
