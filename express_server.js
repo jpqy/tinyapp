@@ -60,6 +60,7 @@ app.get("/urls.json", (req, res) => {
   return res.json(urlDatabase);
 });
 
+// Displays analytics for user's own shortURL creations
 app.get("/urls", (req, res) => {
   if (!isLoggedIn(req.session, users)) {
     return res.redirect("login");
@@ -79,6 +80,7 @@ app.get("/urls", (req, res) => {
   return res.render("urls_index", templateVars);
 });
 
+// Create a new shortURL
 app.get("/urls/new", (req, res) => {
   if (!isLoggedIn(req.session, users)) {
     return res.redirect("../login");
@@ -87,6 +89,7 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
+// Details/edit page for existing shortURL
 app.get("/urls/:shortURL", (req, res) => {
   const { shortURL } = req.params;
   const { longURL } = urlDatabase[shortURL];
@@ -94,6 +97,7 @@ app.get("/urls/:shortURL", (req, res) => {
   return res.render("urls_show", templateVars);
 });
 
+// Adding a new URL
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString();
 
@@ -109,6 +113,7 @@ app.post("/urls", (req, res) => {
   return res.redirect(`urls/${shortURL}`);
 });
 
+// Redirects a shortURL to its longURL
 app.get("/u/:shortURL", (req, res) => {
   const { shortURL } = req.params;
   if (!urlDatabase[shortURL]) {
