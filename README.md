@@ -4,8 +4,10 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["Manage URLs Page"](https://i.imgur.com/pbpuAFK.png)
+!["URL Details Page"](https://i.imgur.com/VIehiWw.png)
+!["Hottest Links Page"](https://i.imgur.com/tE8sjI2.png)
+
 
 ## Dependencies
 
@@ -24,6 +26,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
   * [x] Keeps track of how many times a given short URL is visited
   * [x] Keeps track of unique visitors for each URL
   * [x] Keeps track of every visit (timestamp, and a generated visitor_id), displayed on the URL edit page
+- Has a 'Hot' page with the most popular short URLs
 
 ## Getting Started
 
