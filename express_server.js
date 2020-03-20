@@ -5,13 +5,24 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcrypt');
 const methodOverride = require('method-override');
-const { getIdFromEmail, generateRandomString, urlsForUser } = require('./helpers');
+const {
+  getIdFromEmail,
+  generateRandomString,
+  urlsForUser,
+  isLoggedIn,
+  getVisitSummary,
+  getUniqueVisitors
+} = require('./helpers');
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// session.user_id will be set upon login/registration
+// session.visitor_id is set for everyone once they visit a shortURL, for analytics
 app.use(cookieSession({
   name: 'session',
-  keys: ['user_id']
+  keys: ['secret', 'moresecret', 'evenmore'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 app.use(methodOverride('_method'));
 
@@ -19,15 +30,11 @@ const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
     userID: "userRandomID",
-    totalVisits: 109,
-    uniqueVisits: 24,
     visits: []
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
     userID: "user2RandomID",
-    totalVisits: 0,
-    uniqueVisits: 0,
     visits: []
   }
 };
@@ -54,18 +61,28 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const user = users[req.session.user_id];
-  if (!user) {
+  if (!isLoggedIn(req.session, users)) {
     return res.redirect("login");
   }
+
+  const user = users[req.session.user_id];
   const urls = urlsForUser(user.id, urlDatabase);
-  let templateVars = { urls, user };
+
+  // Calculate unique visitors for each url
+  for (const url in urls) {
+    if (urls[url].visits.length === 0) {
+      urls[url].uniqueVisitors = 0;
+    } else {
+      urls[url].uniqueVisitors = getUniqueVisitors(urls[url].visits);
+    }
+  }
   console.log(urls);
+  let templateVars = { urls, user };
   return res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  if (!req.session.user_id) {
+  if (!isLoggedIn(req.session, users)) {
     return res.redirect("../login");
   } else {
     return res.render("urls_new", { user: users[(req.session.user_id)] });
@@ -89,8 +106,6 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
     userID: req.session.user_id,
-    totalVisits: 0,
-    uniqueVisits: 0,
     visits: []
   };
   return res.redirect(`urls/${shortURL}`);
@@ -102,8 +117,17 @@ app.get("/u/:shortURL", (req, res) => {
     return res.status(404).send("ShortURL not found!");
   }
 
-  // Analytics: increment shortURL's total visits
-  urlDatabase[shortURL].totalVisits++;
+  // Possibly give a tracking cookie to determine unique visitors
+  if (!req.session.visitor_id) {
+    req.session.visitor_id = generateRandomString();
+  }
+
+  // Add this visit to shortURL's visits array, storing visitor_id
+  const visit = {
+    visitor: req.session.visitor_id,
+    time: Date.now(),
+  };
+  urlDatabase[shortURL].visits.push(visit);
 
   const { longURL } = urlDatabase[shortURL];
   return res.redirect(longURL);
@@ -133,7 +157,7 @@ app.post("/logout", (req, res) => {
 
 app.get("/register", (req, res) => {
   // Redirect to home if a logged-in user tries to register
-  if (users[req.session.user_id]) {
+  if (isLoggedIn(req.session, users)) {
     return res.redirect('/urls');
   }
   return res.render("register", { user: users[req.session.user_id] });
@@ -162,7 +186,7 @@ app.post("/register", (req, res) => {
 
 app.get("/login", (req, res) => {
   // Redirect to home if a logged-in user tries to login
-  if (users[req.session.user_id]) {
+  if (isLoggedIn(req.session, users)) {
     return res.redirect('/urls');
   }
   return res.render("login", { user: users[req.session.user_id] });
