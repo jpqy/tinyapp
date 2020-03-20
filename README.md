@@ -20,13 +20,14 @@ TinyApp is a full stack web application built with Node and Express that allows 
 ## Stretch (Bonus) Features
 
 - Can serve app in a subdirectory such as example.com/tinyapp
-* [ ] Analytics
-  * [ ] Keeps track of how many times a given short URL is visited
-  * [ ] Keeps track of unique visitors for each URL
+* [x] Analytics
+  * [x] Keeps track of how many times a given short URL is visited
+  * [x] Keeps track of unique visitors for each URL
   * [ ] Keeps track of every visit (timestamp, and a generated visitor_id), displayed on the URL edit page
 
 ## Getting Started
 
 - Install all dependencies (using the `npm install` command)
 - If serving the app in a subdirectory (i.e. example.com/tinyapp), set the environmental variable `TINYAPP_BASE_URL` appropriately (i.e. /tinyapp/)
-- Run the development web server using the `npm start` command
+- (Optional) Set server port with environmental variable `TINYAPP_PORT` (default is 8080)
+- Run the development web server using the command `node express_server.js` with your favourite service manager
