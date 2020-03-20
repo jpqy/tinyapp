@@ -17,8 +17,8 @@ const {
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// session.user_id will be set upon login/registration
-// session.visitor_id is set for everyone once they visit a shortURL, for analytics
+// req.session.user_id will be set upon login/registration
+// req.session.visitor_id is set for everyone once they visit a shortURL, for analytics
 app.use(cookieSession({
   name: 'session',
   keys: ['secret', 'moresecret', 'evenmore'],
@@ -76,7 +76,7 @@ app.get("/urls", (req, res) => {
       urls[url].uniqueVisitors = getUniqueVisitors(urls[url].visits);
     }
   }
-  console.log(urls);
+  
   let templateVars = { urls, user };
   return res.render("urls_index", templateVars);
 });
