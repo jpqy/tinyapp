@@ -11,7 +11,8 @@ const {
   urlsMadeByUser,
   isLoggedIn,
   getVisitSummary,
-  getUniqueVisitors
+  getUniqueVisitors,
+  displayError
 } = require('./helpers');
 
 app.set("view engine", "ejs");
@@ -66,7 +67,7 @@ app.get("/urls.json", (req, res) => {
 // Displays analytics for user's own shortURL creations
 app.get("/urls", (req, res) => {
   if (!isLoggedIn(req.session, users)) {
-    return res.status(401).send("You must be logged in for that!");
+    return displayError(res, 401, "You must be logged in for that!", null);
   }
 
   const user = users[req.session.user_id];
@@ -125,7 +126,7 @@ app.post("/urls", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const { shortURL } = req.params;
   if (!urlDatabase[shortURL]) {
-    return res.status(404).send("ShortURL not found!");
+    return displayError(res, 404, "ShortURL not found!", users[req.session.user_id]);
   }
 
   // Give a tracking cookie to determine unique visitors
@@ -157,7 +158,7 @@ app.delete("/urls/:shortURL", (req, res) => {
     delete urlDatabase[shortURL];
     return res.redirect("..");
   } else {
-    return res.status(401).send("Operation failed");
+    return displayError(res, 401, "Operation failed", users[req.session.user_id]);
   }
 });
 
@@ -177,9 +178,9 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).send("You did not fill out the form correctly!");
+    return displayError(res, 400, "You did not fill out the form correctly!", null);
   } else if (getIdFromEmail(email, users)) {
-    return res.status(400).send("Email already in use!");
+    return displayError(res, 400, "Email already in use!", null);
   }
 
   // Collision handling during userID generation
@@ -208,9 +209,9 @@ app.post("/login", (req, res) => {
   const id = getIdFromEmail(email, users);
 
   if (!id) {
-    return res.status(403).send("Login failed");
+    return displayError(res, 403, "Login failed", null);
   } else if (bcrypt.compareSync(password, users[id].hashedPassword) === false) {
-    return res.status(403).send("Login failed");
+    return displayError(res, 403, "Login failed", null);
   } else {
     req.session.user_id = id;
     return res.redirect("urls");

@@ -51,4 +51,9 @@ const getVisitSummary = (visits) => {
 const getUniqueVisitors = (visits) => {
   return Object.keys(getVisitSummary(visits)).length;
 };
-module.exports = { getIdFromEmail, generateRandomString, urlsMadeByUser, isLoggedIn, getVisitSummary, getUniqueVisitors };
+
+const displayError = (res, errorCode, errorMessage, user)=>{
+  return res.status(errorCode).render("error", 
+    {user, errorCode, errorMessage});
+}
+module.exports = { getIdFromEmail, generateRandomString, urlsMadeByUser, isLoggedIn, getVisitSummary, getUniqueVisitors, displayError };
