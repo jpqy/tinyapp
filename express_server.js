@@ -48,11 +48,14 @@ const users = {
   "user2RandomID": {
     id: "user2RandomID",
     email: "b@b.com",
-    password: "dishwasher"
+    hashedPassword: bcrypt.hashSync("dishwasher", 10)
   }
 };
 
 app.get("/", (req, res) => {
+  if (!isLoggedIn(req.session, users)) {
+    return res.redirect("login");
+  }
   return res.redirect("urls");
 });
 
@@ -63,7 +66,7 @@ app.get("/urls.json", (req, res) => {
 // Displays analytics for user's own shortURL creations
 app.get("/urls", (req, res) => {
   if (!isLoggedIn(req.session, users)) {
-    return res.redirect("login");
+    return res.status(401).send("You must be logged in for that!");
   }
 
   const user = users[req.session.user_id];
@@ -93,6 +96,11 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const { shortURL } = req.params;
   const url = urlDatabase[shortURL];
+
+  // Check if user is owner of url
+  if (url.userID !== req.session.user_id) {
+    return res.status(401).send("You cannot do that!");
+  }
   let templateVars = { shortURL, url, user: users[(req.session.user_id)] };
   return res.render("urls_show", templateVars);
 });
@@ -155,7 +163,7 @@ app.delete("/urls/:shortURL", (req, res) => {
 
 app.post("/logout", (req, res) => {
   req.session = null;
-  return res.redirect("urls");
+  return res.redirect("login");
 });
 
 app.get("/register", (req, res) => {
