@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 35353; // default port 8080
+const PORT = process.env.TINYAPP_PORT || 8080;
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require('bcrypt');
