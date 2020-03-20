@@ -145,7 +145,7 @@ app.get("/u/:shortURL", (req, res) => {
     visitor: req.session.visitor_id,
     time: new Date(Date.now()),
   };
-  urlDatabase[shortURL].visits.push(visit);
+  urlDatabase[shortURL].visits.unshift(visit);
 
   const { longURL } = urlDatabase[shortURL];
   return res.redirect(longURL);

@@ -43,10 +43,10 @@
       </thead>
       
       <tbody>  
-        <% for (const visit of url.visits) { %>
+        <% for (let i = 0; i < url.visits.length && i < 100; i++) { %>
         <tr>
-          <td><%= visit.visitor %></td>
-          <td><%= visit.time.toLocaleString() %></td>
+          <td><%= url.visits[i].visitor %></td>
+          <td><%= url.visits[i].time.toLocaleString() %></td>
         </tr>
         <% } %>
       </tbody>
