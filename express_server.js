@@ -8,7 +8,7 @@ const methodOverride = require('method-override');
 const {
   getIdFromEmail,
   generateRandomString,
-  urlsForUser,
+  urlsMadeByUser,
   isLoggedIn,
   getVisitSummary,
   getUniqueVisitors
@@ -66,17 +66,15 @@ app.get("/urls", (req, res) => {
   }
 
   const user = users[req.session.user_id];
-  const urls = urlsForUser(user.id, urlDatabase);
+  const urls = urlsMadeByUser(user.id, urlDatabase);
 
   // Calculate unique visitors for each url
   for (const url in urls) {
-    if (urls[url].visits.length === 0) {
-      urls[url].uniqueVisitors = 0;
-    } else {
+    {
       urls[url].uniqueVisitors = getUniqueVisitors(urls[url].visits);
     }
   }
-  
+
   let templateVars = { urls, user };
   return res.render("urls_index", templateVars);
 });

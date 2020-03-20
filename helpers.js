@@ -20,10 +20,10 @@ const generateRandomString = () => {
 };
 
 // Filters urlDatabase to only those with id of current user
-const urlsForUser = (id, urlDatabase) => {
+const urlsMadeByUser = (userID, urlDatabase) => {
   const result = {};
   for (key in urlDatabase) {
-    if (urlDatabase[key].userID === id) {
+    if (urlDatabase[key].userID === userID) {
       result[key] = urlDatabase[key];
     }
   }
@@ -39,7 +39,7 @@ const isLoggedIn = (session, userDB) => {
 const getVisitSummary = (visits) => {
   const visitSummary = {};
   for (visit of visits) {
-    if (visitSummary[visit.visitor] === undefined) {
+    if (!visitSummary[visit.visitor]) {
       visitSummary[visit.visitor] = 1;
     } else {
       visitSummary[visit.visitor]++;
@@ -51,4 +51,4 @@ const getVisitSummary = (visits) => {
 const getUniqueVisitors = (visits) => {
   return Object.keys(getVisitSummary(visits)).length;
 };
-module.exports = { getIdFromEmail, generateRandomString, urlsForUser, isLoggedIn, getVisitSummary, getUniqueVisitors };
+module.exports = { getIdFromEmail, generateRandomString, urlsMadeByUser, isLoggedIn, getVisitSummary, getUniqueVisitors };
