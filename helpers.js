@@ -64,6 +64,22 @@ const fixUrl = (url) => {
   }
   return url;
 };
+
+// Get the most visited shortURLs up to a max number, returned as array of shortURLs
+const getMostVisitedUrls = (max, urlDB) => {
+  // Make array of [shortURl, noOfVisitors] for sorting url objs
+  let visitTally = [];
+  for (url in urlDB) {
+    visitTally.push([url, urlDB[url].visits.length]);
+  }
+  // Sort by noOfVisitors in descending order then get rid of noOfVisitors to leave
+  // only the shortURLs array sorted by visits
+  visitTally.sort((a, b) => b[1] - a[1]);
+  const mostVisited = visitTally.map(x => x[0]);
+
+  return mostVisited.slice(0, max);
+};
+
 module.exports = {
   getIdFromEmail,
   generateRandomString,
@@ -72,5 +88,6 @@ module.exports = {
   getVisitSummary,
   getUniqueVisitors,
   displayError,
-  fixUrl
+  fixUrl,
+  getMostVisitedUrls
 };

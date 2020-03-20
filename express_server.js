@@ -13,7 +13,8 @@ const {
   getVisitSummary,
   getUniqueVisitors,
   displayError,
-  fixUrl
+  fixUrl,
+  getMostVisitedUrls
 } = require('./helpers');
 
 app.set("view engine", "ejs");
@@ -30,13 +31,38 @@ app.use(methodOverride('_method'));
 
 const urlDatabase = {
   "b2xVn2": {
-    longURL: "http://www.lighthouselabs.ca",
+    longURL: "http://answers.yahoo.com",
     userID: "userRandomID",
     visits: []
   },
   "9sm5xK": {
-    longURL: "http://www.google.com",
+    longURL: "http://www.askjeeves.com",
     userID: "user2RandomID",
+    visits: []
+  },
+  "b2xVn3": {
+    longURL: "http://www.neopets.com",
+    userID: "userRandomID",
+    visits: []
+  },
+  "b2xVn4": {
+    longURL: "http://www.altavista.com",
+    userID: "userRandomID",
+    visits: []
+  },
+  "b2xVn5": {
+    longURL: "http://www.geocities.com",
+    userID: "userRandomID",
+    visits: []
+  },
+  "b2xVn6": {
+    longURL: "http://www.lycos.com",
+    userID: "userRandomID",
+    visits: []
+  },
+  "b2xVn7": {
+    longURL: "http://www.aol.com",
+    userID: "userRandomID",
     visits: []
   }
 };
@@ -56,7 +82,7 @@ const users = {
 
 app.get("/", (req, res) => {
   if (!isLoggedIn(req.session, users)) {
-    return res.redirect("login");
+    return res.redirect("hot");
   }
   return res.redirect("urls");
 });
@@ -171,7 +197,7 @@ app.delete("/urls/:shortURL", (req, res) => {
 
 app.post("/logout", (req, res) => {
   req.session = null;
-  return res.redirect("login");
+  return res.redirect("hot");
 });
 
 app.get("/register", (req, res) => {
@@ -223,6 +249,17 @@ app.post("/login", (req, res) => {
     req.session.user_id = id;
     return res.redirect("urls");
   }
+});
+
+// Displays list of most visited shortURLs
+app.get("/hot", (req, res) => {
+  const hotUrls = getMostVisitedUrls(20, urlDatabase);
+
+  // Generate unique visitor stats for these hotUrl objs to pass in
+  for (const hotUrl of hotUrls) {
+    urlDatabase[hotUrl].uniqueVisitors = getUniqueVisitors(urlDatabase[hotUrl].visits);
+  }
+  return res.render("hot", { hotUrls, urls: urlDatabase, user: users[req.session.user_id] });
 });
 
 app.listen(PORT, () => {
