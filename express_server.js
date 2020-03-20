@@ -92,8 +92,8 @@ app.get("/urls/new", (req, res) => {
 // Details/edit page for existing shortURL
 app.get("/urls/:shortURL", (req, res) => {
   const { shortURL } = req.params;
-  const { longURL } = urlDatabase[shortURL];
-  let templateVars = { shortURL, longURL, user: users[(req.session.user_id)] };
+  const url = urlDatabase[shortURL];
+  let templateVars = { shortURL, url, user: users[(req.session.user_id)] };
   return res.render("urls_show", templateVars);
 });
 
@@ -128,7 +128,7 @@ app.get("/u/:shortURL", (req, res) => {
   // Add this visit to shortURL's visits array with visitor_id and timestamp
   const visit = {
     visitor: req.session.visitor_id,
-    time: Date.now(),
+    time: new Date(Date.now()),
   };
   urlDatabase[shortURL].visits.push(visit);
 

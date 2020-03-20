@@ -23,7 +23,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 * [x] Analytics
   * [x] Keeps track of how many times a given short URL is visited
   * [x] Keeps track of unique visitors for each URL
-  * [ ] Keeps track of every visit (timestamp, and a generated visitor_id), displayed on the URL edit page
+  * [x] Keeps track of every visit (timestamp, and a generated visitor_id), displayed on the URL edit page
 
 ## Getting Started
 
