@@ -24,7 +24,11 @@
         <form action="urls/<%= shortURL %>?_method=PUT" method="post" class="card-title">
           <h5 class="card-title">Edit</h5>
           <span>New URL: </span><input type="text" label="New URL:" placeholder="<%= url.longURL %>" name="newLongURL" size="50">
-          <button>Submit</button>
+          <% if (url.visits.length > 50) { %>
+            <button class="btn btn-danger">Troll</button>
+          <% } else { %>
+            <button class="btn btn-info">Edit</button>
+          <% } %>
         </form>
       </div>
     </div>

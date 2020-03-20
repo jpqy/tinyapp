@@ -12,7 +12,8 @@ const {
   isLoggedIn,
   getVisitSummary,
   getUniqueVisitors,
-  displayError
+  displayError,
+  fixUrl
 } = require('./helpers');
 
 app.set("view engine", "ejs");
@@ -98,9 +99,14 @@ app.get("/urls/:shortURL", (req, res) => {
   const { shortURL } = req.params;
   const url = urlDatabase[shortURL];
 
+  // Check if url exists
+  if (!url) {
+    return displayError(res, 404, "URL does not exist!", users[(req.session.user_id)]);
+  }
+
   // Check if user is owner of url
   if (url.userID !== req.session.user_id) {
-    return res.status(401).send("You cannot do that!");
+    return displayError(res, 401, "You cannot do that!", users[(req.session.user_id)]);
   }
   let templateVars = { shortURL, url, user: users[(req.session.user_id)] };
   return res.render("urls_show", templateVars);
@@ -115,7 +121,7 @@ app.post("/urls", (req, res) => {
     shortURL = generateRandomString();
   }
   urlDatabase[shortURL] = {
-    longURL: req.body.longURL,
+    longURL: fixUrl(req.body.longURL),
     userID: req.session.user_id,
     visits: []
   };
@@ -146,8 +152,9 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.put("/urls/:shortURL", (req, res) => {
-  const { shortURL, newLongURL } = req.params;
-  urlDatabase[shortURL].longURL = newLongURL;
+  const { shortURL } = req.params;
+  const { newLongURL } = req.body;
+  urlDatabase[shortURL].longURL = fixUrl(newLongURL);
   return res.redirect("..");
 });
 

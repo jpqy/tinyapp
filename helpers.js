@@ -52,8 +52,25 @@ const getUniqueVisitors = (visits) => {
   return Object.keys(getVisitSummary(visits)).length;
 };
 
-const displayError = (res, errorCode, errorMessage, user)=>{
-  return res.status(errorCode).render("error", 
-    {user, errorCode, errorMessage});
-}
-module.exports = { getIdFromEmail, generateRandomString, urlsMadeByUser, isLoggedIn, getVisitSummary, getUniqueVisitors, displayError };
+const displayError = (res, errorCode, errorMessage, user) => {
+  return res.status(errorCode).render("error",
+    { user, errorCode, errorMessage });
+};
+
+// Appends http:// in front of url
+const fixUrl = (url) => {
+  if (!url.startsWith('http://')) {
+    return `http://${url}`;
+  }
+  return url;
+};
+module.exports = {
+  getIdFromEmail,
+  generateRandomString,
+  urlsMadeByUser,
+  isLoggedIn,
+  getVisitSummary,
+  getUniqueVisitors,
+  displayError,
+  fixUrl
+};
