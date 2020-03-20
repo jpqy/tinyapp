@@ -115,12 +115,12 @@ app.get("/u/:shortURL", (req, res) => {
     return res.status(404).send("ShortURL not found!");
   }
 
-  // Possibly give a tracking cookie to determine unique visitors
+  // Give a tracking cookie to determine unique visitors
   if (!req.session.visitor_id) {
     req.session.visitor_id = generateRandomString();
   }
 
-  // Add this visit to shortURL's visits array, storing visitor_id
+  // Add this visit to shortURL's visits array with visitor_id and timestamp
   const visit = {
     visitor: req.session.visitor_id,
     time: Date.now(),
@@ -169,7 +169,7 @@ app.post("/register", (req, res) => {
     return res.status(400).send("Email already in use!");
   }
 
-  // Collision handling for userID
+  // Collision handling during userID generation
   const id = generateRandomString();
   while (users[id]) {
     id = generateRandomString();
